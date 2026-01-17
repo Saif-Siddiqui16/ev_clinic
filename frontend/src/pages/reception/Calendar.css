@@ -1,0 +1,159 @@
+.calendar-page {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Controls Bar Styling */
+.calendar-controls-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 1.5rem;
+    background: var(--white);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+}
+
+.view-selector {
+    display: flex;
+    background: #f8fafc;
+    padding: 0.35rem;
+    border-radius: 10px;
+    gap: 0.25rem;
+}
+
+.view-selector button {
+    border: none;
+    background: none;
+    padding: 0.6rem 1.5rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #64748b;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.view-selector button.active {
+    background: var(--white);
+    color: var(--primary-color);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.calendar-date-nav {
+    display: flex;
+    align-items: center;
+    gap: 2.5rem;
+}
+
+.nav-arrow {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1.5px solid #e2e8f0;
+    border-radius: 6px;
+    background: var(--white);
+    color: #64748b;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.nav-arrow:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+
+.current-date-text {
+    font-size: 1.125rem;
+    font-weight: 800;
+    color: var(--primary-color);
+}
+
+.btn-today {
+    padding: 0.6rem 2rem;
+    border: 2px solid var(--primary-color);
+    background: var(--white);
+    color: var(--primary-color);
+    font-weight: 700;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-today:hover {
+    background: var(--primary-color);
+    color: var(--white);
+}
+
+/* Time Grid Styling */
+.calendar-content {
+    padding: 2rem;
+}
+
+.time-grid {
+    display: flex;
+    flex-direction: column;
+}
+
+.time-row {
+    display: flex;
+    align-items: center;
+    padding: 1.5rem 0;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.time-row:last-child {
+    border-bottom: none;
+}
+
+.time-label {
+    min-width: 80px;
+    font-size: 0.9375rem;
+    font-weight: 700;
+    color: #475569;
+}
+
+.time-slot-available {
+    flex: 1;
+    margin-left: 2rem;
+    height: 60px;
+    border: 2px dashed #e2e8f0;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #94a3b8;
+    font-size: 0.875rem;
+    font-weight: 600;
+    transition: all 0.2s;
+    background: #f8fafc;
+}
+
+.time-slot-available:hover {
+    border-color: #cbd5e1;
+    background: #f1f5f9;
+}
+
+@media (max-width: 768px) {
+    .calendar-controls-bar {
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .calendar-date-nav {
+        gap: 1rem;
+    }
+
+    .current-date-text {
+        font-size: 1rem;
+    }
+}
