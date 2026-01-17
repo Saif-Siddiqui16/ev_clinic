@@ -11,8 +11,5 @@ router.get('/clinics/my', protect, authController.getMyClinics);
 router.post('/select-clinic', protect, authController.selectClinic);
 router.post('/change-password', protect, authController.changePassword);
 router.get('/refresh-token', protect, authController.refreshToken);
-router.post('/impersonate', protect, authController.impersonate);
-router.post('/impersonate', protect, authController.impersonate);
-
 
 export default router;

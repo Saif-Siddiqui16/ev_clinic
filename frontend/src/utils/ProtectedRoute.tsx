@@ -25,8 +25,13 @@ const ProtectedRoute: React.FC<ProtectedRouteProps> = ({ children, allowedRoles 
         return <Navigate to="/login" replace />;
     }
 
-    if (allowedRoles && !allowedRoles.some(role => user?.roles?.includes(role)) && !user?.roles?.includes('SUPER_ADMIN')) {
-        return <Navigate to="/unauthorized" replace />;
+    if (allowedRoles) {
+        const userRoles = (user?.roles || []).map((r: string) => r.toUpperCase());
+        const isAllowed = allowedRoles.some(role => userRoles.includes(role.toUpperCase())) || userRoles.includes('SUPER_ADMIN');
+
+        if (!isAllowed) {
+            return <Navigate to="/unauthorized" replace />;
+        }
     }
 
     return <>{children}</>;

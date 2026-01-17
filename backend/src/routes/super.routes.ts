@@ -19,7 +19,8 @@ router.patch('/clinics/:id', superController.updateClinic);
 router.patch('/clinics/:id/status', superController.toggleClinicStatus);
 router.delete('/clinics/:id', superController.deleteClinic);
 router.patch('/clinics/:id/modules', superController.updateModules);
-router.post('/clinics/impersonate', superController.impersonateClinic);
+router.post('/impersonate/clinic', superController.impersonateClinic);
+router.post('/impersonate/user', superController.impersonateUser);
 
 // ==================== STAFF ====================
 router.get('/staff', superController.getStaff);

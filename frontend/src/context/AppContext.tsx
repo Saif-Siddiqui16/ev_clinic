@@ -173,8 +173,18 @@ export const AppProvider = ({ children }: { children: React.ReactNode }) => {
             ? await superService.createClinicAdmin(Number(targetClinicId), member)
             : await clinicService.createStaff(member);
 
-        setStaff(prev => [...prev, res.data]);
-        return res.data;
+        // Flatten the staff object if it has a nested user (common in creation response)
+        const staffData = res.data || res;
+        const flattenedStaff = {
+            ...staffData,
+            name: staffData.name || staffData.user?.name,
+            email: staffData.email || staffData.user?.email,
+            phone: staffData.phone || staffData.user?.phone,
+            clinics: staffData.clinics || [staffData.clinicId]
+        };
+
+        setStaff(prev => [...prev, flattenedStaff]);
+        return flattenedStaff;
     };
 
     const updateStaff = async (staffId: number, updates: any) => {

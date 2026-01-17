@@ -105,19 +105,37 @@ export const triggerBackup = asyncHandler(async (req: AuthRequest, res: Response
 });
 
 export const impersonateClinic = asyncHandler(async (req: AuthRequest, res: Response) => {
-    const { ip, device } = (req as any).getClientInfo ? (req as any).getClientInfo(req) : { ip: 'unknown', device: 'unknown' };
-
-    // We can't easily access getClientInfo from auth controller here, so we replicate it or just pass unknown for now
-    // Actually, I'll just use a local helper or import it if I can.
-    // For now, let's just get it from req.
     const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
     const clientDevice = req.headers['user-agent'] || 'unknown';
 
-    const result = await import('../services/auth.service').then(m => m.impersonateClinic(req.user!.id, req.body.clinicId, String(clientIp), String(clientDevice)));
+    const result = await import('../services/auth.service').then(m => m.impersonateClinic(
+        req.user!.id,
+        req.body.clinicId,
+        String(clientIp),
+        String(clientDevice)
+    ));
 
     res.status(200).json({
         success: true,
         message: 'Clinic impersonation successful',
+        data: result
+    });
+});
+
+export const impersonateUser = asyncHandler(async (req: AuthRequest, res: Response) => {
+    const clientIp = req.headers['x-forwarded-for'] || req.socket.remoteAddress || 'unknown';
+    const clientDevice = req.headers['user-agent'] || 'unknown';
+
+    const result = await import('../services/auth.service').then(m => m.impersonate(
+        req.user!.id,
+        req.body.userId,
+        String(clientIp),
+        String(clientDevice)
+    ));
+
+    res.status(200).json({
+        success: true,
+        message: 'User impersonation successful',
         data: result
     });
 });

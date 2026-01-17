@@ -283,12 +283,21 @@ export const impersonate = async (superAdminId: number, targetUserId: number, ip
     }
 
     // 3. Issue Token for Target User (Include first clinic ID if available)
-    const firstClinicId = targetUser.clinicstaff[0]?.clinicId;
+    const firstStaffRecord = targetUser.clinicstaff[0];
+    const firstClinicId = firstStaffRecord?.clinicId;
+
+    // Derive the best role to represent this user
+    let targetRole = targetUser.role;
+    if (targetUser.role === 'RECEPTIONIST') {
+        const staffRoles = targetUser.clinicstaff.map(s => s.role);
+        if (staffRoles.includes('ADMIN')) targetRole = 'ADMIN';
+        else if (staffRoles.includes('DOCTOR')) targetRole = 'DOCTOR';
+    }
 
     const token = signToken({
         id: targetUser.id,
         clinicId: firstClinicId,
-        role: targetUser.role,
+        role: targetRole,
         impersonatedBy: superAdmin.email
     }, '4h');
 

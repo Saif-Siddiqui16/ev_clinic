@@ -151,6 +151,24 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
         localStorage.removeItem('ev_clinic');
     };
 
+    const handleRedirectByRole = (role: string) => {
+        if (!role) {
+            navigate('/');
+            window.location.reload();
+            return;
+        }
+
+        const r = role.toUpperCase();
+        if (r === 'SUPER_ADMIN') navigate('/super-admin');
+        else if (r === 'ADMIN') navigate('/clinic-admin');
+        else if (r === 'DOCTOR') navigate('/doctor/dashboard');
+        else if (r === 'RECEPTIONIST') navigate('/reception/dashboard');
+        else if (r === 'PATIENT') navigate('/patient/dashboard');
+        else navigate('/');
+
+        window.location.reload(); // Hard refresh to clear any stale state
+    };
+
     const impersonate = async (userId: number) => {
         try {
             const response: any = await authService.impersonate(userId);
@@ -171,21 +189,13 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 // Auto-set clinic if available to avoid select-clinic call (which loses impersonation context)
                 if (userData.clinics && userData.clinics.length > 0) {
                     const firstClinic = userData.clinics[0];
-                    // We don't have full clinic details here, but the token already has the clinicId
-                    // The dashboard will fetch stats based on the token.
-                    // We can set a minimal clinic object to satisfy the context.
                     const clinicContext = { id: firstClinic.id, role: firstClinic.role, name: 'Managed Clinic' };
                     setSelectedClinic(clinicContext);
                     localStorage.setItem('ev_clinic', JSON.stringify(clinicContext));
                 }
 
                 // Redirect based on role
-                const role = userData.roles[0];
-                if (role === 'ADMIN') navigate('/admin/dashboard');
-                else if (role === 'DOCTOR') navigate('/doctor/dashboard');
-                else if (role === 'RECEPTIONIST') navigate('/reception/dashboard');
-                else if (role === 'PATIENT') navigate('/patient/dashboard');
-
+                handleRedirectByRole(userData.role || userData.roles[0]);
                 return true;
             }
             return false;
@@ -213,13 +223,14 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 setSelectedClinic(clinic);
                 setIsAuthenticated(true);
 
-                navigate('/clinic-admin');
+                // Redirect based on role
+                handleRedirectByRole(userData.role || userData.roles[0]);
                 return true;
             }
             return false;
         } catch (error) {
             console.error('Clinic impersonation failed:', error);
-            alert('Failed to login as clinic admin. Please ensure the clinic has an active admin account.');
+            alert('Failed to login as clinic admin. Please ensure the clinic has at least one staff member.');
             return false;
         }
     };

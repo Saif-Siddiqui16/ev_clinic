@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { useApp } from '../../context/AppContext';
 import { useAuth } from '../../context/AuthContext';
 import { FiPlus, FiSearch, FiUser, FiCheck, FiLock, FiEye, FiEdit, FiTrash2, FiPower, FiLogIn } from 'react-icons/fi';
@@ -8,7 +7,6 @@ import ConfirmModal from '../../components/ConfirmModal';
 import './Admins.css';
 
 const ClinicAdmins = () => {
-    const navigate = useNavigate();
     const { impersonate } = useAuth() as any;
     const { clinics, staff, addStaff, updateStaff, toggleStaffStatus, deleteStaff } = useApp() as any;
     const [searchTerm, setSearchTerm] = useState('');
@@ -23,9 +21,9 @@ const ClinicAdmins = () => {
 
     const allStaff = (staff as any[]);
     const filteredAdmins = allStaff.filter(a =>
-        a.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        a.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        a.role?.toLowerCase().includes(searchTerm.toLowerCase())
+        (a.name?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+        (a.email?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
+        (a.role?.toLowerCase() || '').includes(searchTerm.toLowerCase())
     );
 
     const handleCreateAdmin = async (e: any) => {
@@ -120,8 +118,8 @@ const ClinicAdmins = () => {
         try {
             const success = await impersonate(admin.id);
             if (success) {
-                navigate('/clinic-admin');
-                window.location.reload();
+                // Redirection is now handled centrally in AuthContext's impersonate function
+                return;
             } else {
                 alert('Impersonation failed. Please check permissions.');
             }

@@ -14,9 +14,9 @@ export const authService = {
     },
 
     impersonate: async (userId: number) => {
-        return api.post('/auth/impersonate', { userId });
+        return api.post('/super/impersonate/user', { userId });
     },
     impersonateClinic: async (clinicId: number) => {
-        return api.post('/super/clinics/impersonate', { clinicId });
+        return api.post('/super/impersonate/clinic', { clinicId });
     }
 };
