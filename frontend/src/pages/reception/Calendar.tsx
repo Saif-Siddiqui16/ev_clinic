@@ -74,8 +74,11 @@ const CalendarView = () => {
                     <div className="form-group">
                         <label>Doctor *</label>
                         <select required>
-                            <option value="">Select Doctor</option>
-                            {staff.filter((s: any) => s.role === 'DOCTOR').map((d: any) => (
+                            <option value="">Select Provider</option>
+                            {staff.filter((s: any) => {
+                                const roles = (s.roles || [s.role] || []).map((r: string) => String(r).toUpperCase());
+                                return roles.includes('DOCTOR') || roles.includes('ADMISSION');
+                            }).map((d: any) => (
                                 <option key={d.id} value={d.id}>{d.name}</option>
                             ))}
                         </select>

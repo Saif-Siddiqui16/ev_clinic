@@ -186,16 +186,21 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
                 setUser(userData);
                 setIsAuthenticated(true);
 
-                // Auto-set clinic if available to avoid select-clinic call (which loses impersonation context)
+                // Auto-set clinic if available to avoid select-clinic call
                 if (userData.clinics && userData.clinics.length > 0) {
                     const firstClinic = userData.clinics[0];
-                    const clinicContext = { id: firstClinic.id, role: firstClinic.role, name: 'Managed Clinic' };
+                    const clinicContext = {
+                        id: firstClinic.id,
+                        role: firstClinic.role,
+                        name: 'Managed Clinic'
+                    };
                     setSelectedClinic(clinicContext);
                     localStorage.setItem('ev_clinic', JSON.stringify(clinicContext));
                 }
 
                 // Redirect based on role
-                handleRedirectByRole(userData.role || userData.roles[0]);
+                const targetRole = userData.role || (userData.roles ? userData.roles[0] : null);
+                handleRedirectByRole(targetRole);
                 return true;
             }
             return false;
@@ -217,14 +222,20 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
                 localStorage.setItem('ev_token', token);
                 localStorage.setItem('ev_user', JSON.stringify(userData));
-                localStorage.setItem('ev_clinic', JSON.stringify(clinic));
+
+                // Use the clinic info provided or from response
+                const clinicContext = clinic || (userData.clinics ? userData.clinics[0] : null);
+                if (clinicContext) {
+                    localStorage.setItem('ev_clinic', JSON.stringify(clinicContext));
+                    setSelectedClinic(clinicContext);
+                }
 
                 setUser(userData);
-                setSelectedClinic(clinic);
                 setIsAuthenticated(true);
 
                 // Redirect based on role
-                handleRedirectByRole(userData.role || userData.roles[0]);
+                const targetRole = userData.role || (userData.roles ? userData.roles[0] : null);
+                handleRedirectByRole(targetRole);
                 return true;
             }
             return false;

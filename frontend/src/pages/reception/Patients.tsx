@@ -265,8 +265,11 @@ const PatientManagement = () => {
                                 <div className="form-group">
                                     <label>Assign Doctor *</label>
                                     <select required value={registrationForm.doctorId} onChange={e => setRegistrationForm({ ...registrationForm, doctorId: e.target.value })}>
-                                        <option value="">Select Doctor</option>
-                                        {(staff || []).filter((s: any) => (s.roles || [s.role]).includes('DOCTOR')).map((d: any) => (
+                                        <option value="">Select Provider</option>
+                                        {(staff || []).filter((s: any) => {
+                                            const roles = (s.roles || [s.role] || []).map((r: string) => String(r).toUpperCase());
+                                            return roles.includes('DOCTOR') || roles.includes('ADMISSION');
+                                        }).map((d: any) => (
                                             <option key={d.id} value={d.id}>{d.name}</option>
                                         ))}
                                     </select>
@@ -456,8 +459,11 @@ const PatientManagement = () => {
                     <div className="form-group">
                         <label>Assign Doctor *</label>
                         <select required value={registrationForm.doctorId} onChange={e => setRegistrationForm({ ...registrationForm, doctorId: e.target.value })}>
-                            <option value="">Select Doctor</option>
-                            {(staff || []).filter((s: any) => s.roles.includes('doctor')).map((d: any) => (
+                            <option value="">Select Provider</option>
+                            {(staff || []).filter((s: any) => {
+                                const roles = (s.roles || [s.role] || []).map((r: string) => String(r).toUpperCase());
+                                return roles.includes('DOCTOR') || roles.includes('ADMISSION');
+                            }).map((d: any) => (
                                 <option key={d.id} value={d.id}>{d.name}</option>
                             ))}
                         </select>

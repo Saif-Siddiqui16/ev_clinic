@@ -313,15 +313,26 @@ export const impersonate = async (superAdminId: number, targetUserId: number, ip
         }
     });
 
+    // Get all staff records to build the full role list
+    const staffRecords = await prisma.clinicstaff.findMany({
+        where: { userId: targetUser.id }
+    });
+
+    const roles = Array.from(new Set([
+        targetUser.role,
+        ...staffRecords.map(s => String(s.role))
+    ])).map(r => r.toUpperCase());
+
     return {
         user: {
             id: targetUser.id,
             email: targetUser.email,
             name: targetUser.name,
-            roles: [targetUser.role],
-            clinics: targetUser.clinicstaff.map((r: any) => ({
-                id: r.clinicId,
-                role: r.role
+            role: targetRole,
+            roles,
+            clinics: staffRecords.map(s => ({
+                id: s.clinicId,
+                role: s.role
             }))
         },
         token
@@ -385,14 +396,22 @@ export const impersonateClinic = async (superAdminId: number, clinicId: number, 
         where: { userId: targetUser.id }
     });
 
+    const roles = Array.from(new Set([
+        targetUser.role,
+        ...staffRecords.map(s => String(s.role))
+    ])).map(r => r.toUpperCase());
+
     return {
         user: {
             id: targetUser.id,
             email: targetUser.email,
             name: targetUser.name,
             role: targetRole,
-            roles: Array.from(new Set([targetUser.role, ...staffRecords.map(r => String(r.role))])),
-            clinics: staffRecords.map(r => r.clinicId)
+            roles,
+            clinics: staffRecords.map(s => ({
+                id: s.clinicId,
+                role: s.role
+            }))
         },
         token
     };

@@ -240,7 +240,10 @@ const ReceptionDashboard = () => {
                         <label>Doctor/Admission *</label>
                         <select name="doctorId" required>
                             <option value="">Select Provider</option>
-                            {clinicStaff.filter((s: any) => (s.roles || [s.role]).includes('doctor') || (s.roles || [s.role]).includes('admission')).map((d: any) => (
+                            {clinicStaff.filter((s: any) => {
+                                const roles = (s.roles || [s.role]).map((r: string) => r.toUpperCase());
+                                return roles.includes('DOCTOR') || roles.includes('ADMISSION');
+                            }).map((d: any) => (
                                 <option key={d.id} value={d.id}>{d.name}</option>
                             ))}
                         </select>
@@ -300,8 +303,11 @@ const ReceptionDashboard = () => {
                     <div className="form-group">
                         <label>Assign Doctor *</label>
                         <select name="doctorId" required>
-                            <option value="">Select Doctor</option>
-                            {clinicStaff.filter((s: any) => (s.roles || [s.role]).includes('doctor')).map((d: any) => (
+                            <option value="">Select Provider</option>
+                            {clinicStaff.filter((s: any) => {
+                                const roles = (s.roles || [s.role]).map((r: string) => r.toUpperCase());
+                                return roles.includes('DOCTOR') || roles.includes('ADMISSION');
+                            }).map((d: any) => (
                                 <option key={d.id} value={d.id}>{d.name}</option>
                             ))}
                         </select>
